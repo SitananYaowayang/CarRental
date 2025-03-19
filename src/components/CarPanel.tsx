@@ -1,10 +1,23 @@
 'use client'
 import Productcard from "./ProductCard";
-import { useReducer,useRef } from 'react';
+import { useReducer,useRef,useEffect,useState } from 'react';
 import Link from "next/link";
 import { count } from "console";
+import getCars from "@/libs/getCars";
 
 export default function CarPanel(){
+    const [carResponse,setCarResponse] = useState(null)
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            const cars = await getCars()
+            setCarResponse(cars)
+        }
+
+        fetchData()
+    },[])
+
+
 
     const countRef= useRef(0)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -26,11 +39,13 @@ export default function CarPanel(){
         const [compareList,dispatchCompare] = useReducer(compareReducer,new Set<string>())
     
     // Mock Data for Demostration Only
-    const mockCarRepo = [{cid:"001",name:"Honda Civic",image:"/img/civic.jpg"},
-        {cid:"002",name:"Honda Accord",image:"/img/accord.jpg"},
-        {cid:"003",name:"Toyota Fortuner",image:"/img/fortuner.jpg"},
-        {cid:"004",name:"Tesla Model3",image:"/img/tesla.jpg"}
-    ]
+    // const mockCarRepo = [{cid:"001",name:"Honda Civic",image:"/img/civic.jpg"},
+    //     {cid:"002",name:"Honda Accord",image:"/img/accord.jpg"},
+    //     {cid:"003",name:"Toyota Fortuner",image:"/img/fortuner.jpg"},
+    //     {cid:"004",name:"Tesla Model3",image:"/img/tesla.jpg"}
+    // ]
+
+    if(!carResponse) return (<p>Car Panel is Loading ...</p>)
     return (
         <div>
             <div style={{margin:"20px",display:"flex",
@@ -39,11 +54,10 @@ export default function CarPanel(){
             }}>
 
 {
-                    mockCarRepo.map((carItem)=>(
-                        <Link href={`/car/${carItem.cid}`}
+                    carResponse.data.map((carItem:Object)=>(
+                        <Link href={`/car/${carItem.id}`}
                         className="w-1/5">
-                        <Productcard carName={carItem.name} imgSrc={carItem.image}
-                onCompare={(car:string)=>dispatchCompare({type:'add' , carName:car})}/>
+                        <Productcard carName={carItem.model} imgSrc={carItem.picture}/>
                         </Link>
                     
                     ))
