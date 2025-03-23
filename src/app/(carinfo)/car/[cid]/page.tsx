@@ -1,5 +1,6 @@
 import Image from "next/image"
 import getCar from "@/libs/getCar"
+import { Link } from "@mui/material"
 export default  async function  CarDetailPage({params}:{params:{cid:string}}){
     
     // Mock Data for Demonstration Only
@@ -28,6 +29,17 @@ export default  async function  CarDetailPage({params}:{params:{cid:string}}){
                     <div>Large Bags: {carDetail.data.largebags}</div>
                     <div>Small Bags: {carDetail.data.smallbags}</div>
                     <div>Deily Rental Rate: {carDetail.data.dayRate} (insurance included)</div>
+
+                <Link href={`/reservations?id=${params.cid}&model=${carDetail.data.model}`}>
+                
+                <button className="block rounded-md bg-sky-600 hover:bg-indigo-600 px-3 py-2 shadow-sm text-white">
+                Make Reservation
+                </button>
+                
+
+                </Link>
+
+
 
                 </div>
             </div>
